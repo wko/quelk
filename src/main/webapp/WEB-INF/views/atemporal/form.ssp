@@ -1,0 +1,55 @@
+<%@ val formInput: de.tu_dresden.epistemic_rewriter.web.FormInput %>
+<%@ val ontologyOptions: List[de.tu_dresden.epistemic_rewriter.OntologyOption] %>
+<%@ val request: javax.servlet.http.HttpServletRequest%>
+<%@ val errors: Map[String, String] = Map() %>
+<% import org.scalatra.forms.views._ %>
+
+<div class="container hidden-print">
+  <form action="/" method="POST" class="form-horizontal">
+    <div class="form-group <%= if(errors.get("text").nonEmpty) {"has-error"} %>">
+      <label class="col-sm-2 control-label" for="text">Enter CQ (*):</label>
+      <div class="col-sm-10">
+        <input name="text" type="text" class="form-control" value="<%= formInput.text%>"/>
+        <span class="error"><%= errors.get("text") %></span>
+      </div>
+    </div>
+
+<div class="form-group <%= if(errors.get("groundTruth").nonEmpty) {"has-error"} %>">
+<label class="col-sm-2 control-label" for="groudTruth">Enter Ground Truth Query:</label>
+<div class="col-sm-10">
+  <input name="groundTruth" type="text" class="form-control" value="<%= formInput.groundTruth%>"/>
+    <span class="error"><%= errors.get("groundTruth") %></span>
+  </div>
+</div>
+    <div class="form-group <%= if(errors.get("ontology").nonEmpty) {"has-error"} %>">
+    <label class="col-sm-2 control-label" for="ontology">Selected Ontology(*):</label>
+    <div class="col-sm-10">
+      <select class="form-control" name="ontology", type="text">
+        #for (  (ontologyOption, idx) <- ontologyOptions.zipWithIndex)
+          <option value="<%= idx %>" <%= if (formInput.ontologyOption == idx) "selected" %>><%= ontologyOption.name %></option>
+        #end
+      </select>
+        <span class="error"><%= errors.get("ontology") %></span>
+      </div>
+    </div>
+
+<div class="form-group <%= if(errors.get("withInference").nonEmpty) {"has-error"} %>">
+<label class="col-sm-2 control-label" for="withInference">With Inference:</label>
+<div class="col-sm-10">
+  <input name="withInference" type="checkbox" class="form-control" <%= if (formInput.withInference) "checked"%> "/>
+    <span class="error"><%= errors.get("withInference") %></span>
+  </div>
+
+</div>
+
+<div class="form-group <%= if(errors.get("temporal").nonEmpty) {"has-error"} %>">
+<label class="col-sm-2 control-label" for="temporal">Temporal:</label>
+<div class="col-sm-10">
+<input name="temporal" type="checkbox" class="form-control" <%= if (formInput.temporal) "checked"%> "/>
+  <span class="error"><%= errors.get("temporal") %></span>
+</div>
+</div>
+
+<input type="submit" value="Submit" class="btn btn-primary">
+</form>
+</div>

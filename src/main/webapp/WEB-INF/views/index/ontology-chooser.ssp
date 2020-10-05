@@ -1,0 +1,26 @@
+<%@ val ontologyOptions: List[de.tu_dresden.epistemic_rewriter.OntologyOption] %>
+<%@ val request: javax.servlet.http.HttpServletRequest %>
+<%@ val errors: Map[String, String] = Map() %>
+<% import org.scalatra.forms.views._ %>
+
+
+
+<div class="container hidden-print">
+  <form action="/" method="POST" class="form-horizontal">
+
+    <div class="form-group <%= if(errors.get("ontology").nonEmpty) {"has-error"} %>">
+    <label class="col-sm-2 control-label" for="ontology">Selected Ontology(*):</label>
+    <div class="col-sm-10">
+      <select class="form-control" name="ontology", type="text">
+        #for (  (ontologyOption, idx) <- ontologyOptions.zipWithIndex)
+          <option value="<%= idx %>"><%= ontologyOption.name %></option>
+        #end
+      </select>
+        <span class="error"><%= errors.get("ontology") %></span>
+      </div>
+    </div>
+
+
+<input type="submit" value="Submit" class="btn btn-primary">
+</form>
+</div>

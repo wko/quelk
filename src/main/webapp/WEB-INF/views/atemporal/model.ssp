@@ -1,0 +1,93 @@
+<%@ val model: de.tu_dresden.epistemic_rewriter.Modellike %>
+<% import org.semanticweb.owlapi.model.OWLNamedIndividual %>
+
+#if (model.canBeVisualized)
+
+
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+<link href="css/vis.min.css" rel="stylesheet" type="text/css" />
+
+<style type="text/css">
+#mynetwork {
+width: 600px;
+height: 400px;
+border: 1px solid lightgray;
+}
+</style>
+
+<div class="container hidden-print">
+<h2>Data Model</h2>
+
+
+<% val hCode = (ind: OWLNamedIndividual) => ind.getIRI.toString.hashCode.abs.toString %>
+
+#for (t <- model.getTimePoints)
+    <% val nodeid = "network" + t.hashCode().abs.toString %>
+    <% val curmodel = model.setTimePoint(Some(t)) %>
+
+    <div>
+        <h3><%= t.toString %></h3>
+        <div id="<%=nodeid%>"></div>
+    </div>
+<script type="text/javascript">
+  // create an array with nodes
+  var nodes = new vis.DataSet([
+  #for ( ind <- curmodel.getIndividuals )
+    {id: <%= hCode(ind) %>, font: { multi: true }, label: '<b><%= ind.getIRI.getShortForm %></b> ->\n <%= curmodel.getClasses(ind).map(_.getIRI.getShortForm).mkString(",\\n")%>'},
+  #end
+  ]);
+
+  // create an array with edges
+  var edges = new vis.DataSet([
+  #for ( (role, inds) <- curmodel.getRoleAssertions )
+    #for ( (ind1, ind2) <- inds )
+      {from: <%= hCode(ind1) %>, to: <%= hCode(ind2) %>, label: '<%= role.getIRI.getShortForm %>'},
+    #end
+  #end
+  ]);
+
+  // create a network
+  var container = document.getElementById('<%= nodeid %>');
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {
+    edges: {
+      font: {
+        size: 12,
+        align: 'horizontal'
+      },
+      arrows:'to'
+    },
+    nodes: {
+      shape: 'box',
+      font: {
+        bold: {
+          color: '#0077aa'
+        }
+      }
+    },
+    physics: {
+      enabled: false
+    },
+    layout: {
+      hierarchical: {
+        direction: "LR",
+        sortMethod: "directed"
+      }
+    }
+  };
+
+  var network = new vis.Network(container, data, options);
+</script>
+
+#end
+
+
+
+
+
+</div>
+#end

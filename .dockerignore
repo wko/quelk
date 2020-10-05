@@ -1,0 +1,8 @@
+data/*
+.git
+tmp
+project/target
+project/project
+.idea 
+target 
+.DS_Store

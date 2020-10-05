@@ -1,0 +1,109 @@
+<%@ val queryResult: de.tu_dresden.epistemic_rewriter.web.TemporalQueryResult %>
+<% import de.tu_dresden.epistemic_rewriter.datatypes.Answer %>
+<% import de.tu_dresden.epistemic_rewriter.QueryStatistics %>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+${include("temporal-form.ssp")}
+    <div class="container">
+      <h2>Query Result
+            #if ( queryResult.millis.nonEmpty )
+                <small> ( Took <%= queryResult.millis.head %> ms )</small>
+            #end
+    </h2>
+      <table class="table">
+
+    <tr>
+        <th>Timepoint</th>
+        <td>
+            <%= queryResult.timePoint %>
+        </td>
+    </tr>
+  <tr>
+          <th>Input Query</th>
+          <td>
+              q(<%= queryResult.query.getAnswerVars().map(_.pShow).mkString(",")%>) = <%= queryResult.query.pShow() %>
+              <p>Ans: <%= queryResult.allAnswers.map(_.pShow).mkString("{",", ","}") %> </p>
+          </td>
+        </tr>
+
+    #if ( queryResult.groundTruthQuery.nonEmpty)
+        <% val analyzer:QueryStatistics = QueryStatistics(queryResult.groundTruthAnswers.head, queryResult.allAnswers) %>
+        <tr>
+            <th>Ground Truth Query</th>
+            <td>
+                q(<%= queryResult.groundTruthQuery.head.getAnswerVars().map(_.pShow).mkString(",")%>) = <%= queryResult.groundTruthQuery.head.pShow() %>
+                <p>Ans: <%= queryResult.groundTruthAnswers.head.map(_.pShow).mkString("{",", ","}") %> </p>
+            </td>
+        </tr>
+
+        <tr>
+    <th>Statistics</th>
+        <td>
+        <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Positive</th>
+                <th scope="col">Negative</th>
+            </tr>
+        </thead>
+
+
+            <tr>
+              <th scope="col">
+                True
+              </th>
+
+              <td>
+                <%= analyzer.truePositives %>
+              </td>
+              <td>
+                <%= analyzer.trueNegatives %>
+              </td>
+            </tr>
+            <tr>
+              <th scope="col"> False </th>
+              <td>
+                  <%= analyzer.falsePositives %>
+              </td>
+                <td> <%= analyzer.falseNegatives %>
+              </tr>
+          </table>
+
+        
+    </td>
+    </tr>
+            #end
+        <tr>
+          <th>Rewritten Queries: (<%= queryResult.answers.size%>)</th>
+          <td>
+            <ol>
+            #for ((query, answers) <- queryResult.answers)
+                <li>
+              q(<%= query.getAnswerVars().map(_.pShow).mkString(",")%>) =
+              <%= query.pShow() %>
+
+              <p>Ans: <%= answers.map(_.pShow).mkString("{",", ","}") %> </p>
+                </li>
+            #end
+            </ol>
+          </td>
+        </tr>
+
+        <tr>
+          <th>Answers: (<%= queryResult.allAnswers.size %>)</th>
+          <td>
+            <ol>
+            #for (answer <- queryResult.allAnswers)
+              <li>
+              <%= answer.pShow %>
+              </li>
+            #end
+            </ol>
+          </td>
+        </tr>
+      </table>
+      <a href="/" class="btn btn-primary">Back</a>
+    </div>
+
+
