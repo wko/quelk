@@ -64,14 +64,14 @@ object N2C2Tool extends StrictLogging {
   val parser = new scopt.OptionParser[Params]("rewriter") {
     opt[File]('d',"d").valueName("<file>").required().
       action( (x, c) => c.copy(dir = x) ).
-      text("the directory with the xml patient data")
+      text("The directory with the xml patient data.")
 
     opt[File]('o',"output").valueName("<file>").required().
       action( (x, c) => c.copy(output = x) ).
-      text("the output file for the resulting ontology")
+      text("The output file for the resulting ontology.")
 
     opt[File]('i',"input").valueName("<file>").required().
       action( (x, c) => c.copy(input = Some(x)) ).
-      text("facts are inserted into the ontology")
+      text("The input ontology that should be extended with ground truth assertions.")
   }
 }

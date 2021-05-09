@@ -1,0 +1,65 @@
+<doc>
+    <configs>
+        <config>
+            <database dbpath="jdbc:postgresql://localhost:5434" dbname="stemporaln2c2" user="postgres" password=""> </database>
+            <ontology path="data/ontologies/temporal_n2c2.ofn"></ontology>
+            <output path="data/queries/results/mi-6mos_non_temporal.xml"></output>
+            <options withInference="true" temporal="false"></options>
+        </config>
+        <!--<config>
+            <database dbpath="jdbc:postgresql://localhost" dbname="spatients" user="postgres" password="postgres"> </database>
+            <ontology path="data/ontologies/patients.ofn"></ontology>
+            <output path="data/queries/results/mi-6mos-results-noinf.xml"></output>
+            <options withInference="false" withRewriting="false"/>
+        </config>
+        <config>
+            <database dbpath="jdbc:postgresql://localhost" dbname="spatients" user="postgres" password="postgres"> </database>
+            <ontology path="data/ontologies/patients.ofn"></ontology>
+            <output path="data/queries/results/mi-6mos-results.xml"></output>
+        </config>
+        <config>
+            <database dbpath="jdbc:postgresql://localhost" dbname="spatientstest" user="postgres" password="postgres"> </database>
+            <ontology path="data/ontologies/patients-test.ofn"></ontology>
+            <output path="data/queries/results/mi-6mos-results-test.xml"></output>
+        </config> -->
+    </configs>
+<operation name="answer"></operation>
+<queries>
+    <query label="MI-6MOS">
+        <part type="NCQ" label="Myocardial Infarction" content="EX(y). (Patient(x) AND hasFinding(x,y) AND 22298006(y))"></part>
+    </query>
+    <query label="MI-6MOS-GT">
+        <part type="NCQ" label="MI-6MOS" content="MI-6MOS(x)"> </part>
+    </query>
+    <query label="True Positives">
+        <part type="AND">
+            <part type="REF" label="MI-6MOS"></part>
+            <part type="REF" label="MI-6MOS-GT"></part>
+        </part>
+    </query>
+    <query label="False Positives">
+        <part type="DIFF">
+            <part type="REF" label="MI-6MOS"></part>
+            <part type="REF" label="MI-6MOS-GT"></part>
+        </part>
+    </query>
+    <query label="False Negatives">
+        <part type="DIFF">
+            <part type="REF" label="MI-6MOS-GT"></part>
+            <part type="REF" label="MI-6MOS"></part>
+        </part>
+    </query>
+    <query label="True Negatives">
+        <part type="AND">
+            <part type="DIFF">
+                <part type="NCQ" label="ALL-PATIENTS" content="EX(). Patient(x)"></part>
+                <part type="REF" label="MI-6MOS-GT"></part>
+            </part>
+            <part type="DIFF">
+                <part type="NCQ" label="ALL-PATIENTS" content="EX(). Patient(x)"></part>
+                <part type="REF" label="MI-6MOS"></part>
+            </part>
+        </part>
+    </query>
+</queries>
+</doc>

@@ -1,0 +1,84 @@
+<doc>
+    <configs>
+        <config>
+            <database dbpath="jdbc:postgresql://localhost:5434" dbname="stemporaln2c2" user="postgres" password=""> </database>
+            <ontology path="data/ontologies/temporal_n2c2.ofn"></ontology>
+            <output path="data/queries/results/diabetes-non-temporal.xml"></output>
+            <options withInference="true" temporal="false"></options>
+        </config>
+        <!--
+        <config>
+            <database dbpath="jdbc:postgresql://localhost:5434" dbname="spatients" user="postgres" password=""> </database>
+            <ontology path="data/ontologies/patients.ofn"></ontology>
+            <output path="data/queries/results/diabetes-results-noinf.xml"></output>
+            <options withInference="false" withRewriting="false"/>
+        </config>
+        <config>
+            <database dbpath="jdbc:postgresql://localhost" dbname="spatients" user="postgres" password=""> </database>
+            <ontology path="data/ontologies/patients.ofn"></ontology>
+            <output path="data/queries/results/diabetes-results.xml"></output>
+        </config>
+        <config>
+            <database dbpath="jdbc:postgresql://localhost" dbname="spatientstest" user="postgres" password=""> </database>
+            <ontology path="data/ontologies/patients-test.ofn"></ontology>
+            <output path="data/queries/results/diabetes-results-test.xml"></output>
+        </config>
+        -->
+    </configs>
+<operation name="answer"></operation>
+<queries>
+    <query label="MAJOR-DIABETES">
+    <part type="AND" >
+        <part type="NCQ" label="Diabetes Mellitus" content="EX(y). (Patient(x) AND hasFinding(x,y) AND 73211009(y))"></part>
+        <part type="GEN" n="1">
+            <part type="NCQ" label="Amputation" content="EX(y). (Patient(x) AND hasFinding(x,y) AND 81723002(y))"></part>
+            <part type="OR">
+                <part type="NCQ" label="Kidney Damage" content="EX(y). (Patient(x) AND hasFinding(x,y) AND 40095003(y))"></part>
+                <!-- <part type="NCQ" label="Kidney" content="EX(y). Patient(x) AND hasFinding(x,y) AND 64033007(y)"></part> -->
+            </part>
+            <part type="OR">
+                <part type="NCQ" label="Skin Conditions" content="EX(y). (Patient(x) AND hasFinding(x,y) AND 422000003(y))"></part>
+                <!-- <part type="NCQ" label="Skin" content="EX(y). Patient(x) AND hasFinding(x,y) AND 39937001(y)"></part> -->
+            </part>
+            <part type="NCQ" label="Retinopathy" content="EX(y). (Patient(x) AND hasFinding(x,y) AND 29555009(y))"></part>
+            <part type="NCQ" label="Neuropathy" content="EX(y). (Patient(x) AND hasFinding(x,y) AND 386033004(y))"></part>
+            <part type="NCQ" label="Nephropathy" content="EX(y). (Patient(x) AND hasFinding(x,y) AND 90708001(y))"></part>
+        </part>
+    </part>
+    </query>
+
+    <query label="MAJOR-DIABETES-GT">
+        <part type="NCQ" label="MAJOR-DIABETES" content="MAJOR-DIABETES(x)"> </part>
+    </query>
+    <query label="True Positives">
+        <part type="AND">
+            <part type="REF" label="MAJOR-DIABETES"></part>
+            <part type="REF" label="MAJOR-DIABETES-GT"></part>
+        </part>
+    </query>
+    <query label="False Positives">
+        <part type="DIFF">
+            <part type="REF" label="MAJOR-DIABETES"></part>
+            <part type="REF" label="MAJOR-DIABETES-GT"></part>
+        </part>
+    </query>
+    <query label="False Negatives">
+        <part type="DIFF">
+            <part type="REF" label="MAJOR-DIABETES-GT"></part>
+            <part type="REF" label="MAJOR-DIABETES"></part>
+        </part>
+    </query>
+    <query label="True Negatives">
+        <part type="AND">
+            <part type="DIFF">
+                <part type="NCQ" label="ALL-PATIENTS" content="EX(). Patient(x)"></part>
+                <part type="REF" label="MAJOR-DIABETES-GT"></part>
+            </part>
+            <part type="DIFF">
+                <part type="NCQ" label="ALL-PATIENTS" content="EX(). Patient(x)"></part>
+                <part type="REF" label="MAJOR-DIABETES"></part>
+            </part>
+        </part>
+    </query>
+</queries>
+</doc>

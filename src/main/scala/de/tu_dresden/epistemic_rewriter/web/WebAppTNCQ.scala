@@ -20,7 +20,7 @@ class WebAppTNCQ extends ScalatraServlet with FormSupport with I18nSupport with 
   val NORMALIZED : Boolean = false
   
    //"http://www.semanticweb.org/forkel/ontologies/2018/6/restaurant#"
-  var lastInput:TemporalFormInput = TemporalFormInput("E[P0D, P8D](EX(y). (r1(x,y) AND A(y)))", "", "")
+  var lastInput:TemporalFormInput = TemporalFormInput("E[P1D, P8D](EX(y). (diagnosedWith(x,y) AND Cancer(y)))", "", "")
   val ontologyOptions = {
     val l = ConfigValues.getOntologies()
     logger.info("Found " + l.size + " ontologies in " + ConfigValues.ROOT_DIRECTORY)
@@ -121,7 +121,6 @@ class WebAppTNCQ extends ScalatraServlet with FormSupport with I18nSupport with 
       }
       case e:Throwable => {
         alerts.enqueue(e.getMessage)
-        alerts.enqueue(e.getStackTrace.toList.map(_.toString).mkString("\n"))
         redirect("/")
       }
     }

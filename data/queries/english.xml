@@ -1,0 +1,66 @@
+<doc>
+    <configs>
+        <config>
+            <database dbpath="jdbc:postgresql://localhost" dbname="spatients" user="postgres" password="postgres"> </database>
+            <ontology path="data/ontologies/patients.ofn"></ontology>
+            <output path="data/queries/results/english-results-noinf.xml"></output>
+            <options withInference="false" withRewriting="false"/>
+        </config>
+        <config>
+            <database dbpath="jdbc:postgresql://localhost" dbname="spatients" user="postgres" password="postgres"> </database>
+            <ontology path="data/ontologies/patients.ofn"></ontology>
+            <output path="data/queries/results/english-results-test.xml"></output>
+        </config>
+        <config>
+            <database dbpath="jdbc:postgresql://localhost" dbname="spatientstest" user="postgres" password="postgres"> </database>
+            <ontology path="data/ontologies/patients-test.ofn"></ontology>
+            <output path="data/queries/results/english-results-test.xml"></output>
+        </config>
+    </configs>
+<operation name="answer"></operation>
+<queries>
+    <query label="ENGLISH">
+        <part type="OR">
+            <part type="NCQ" label="ENGLISH LANGUAGE" content="EX(y). (Patient(x) AND hasFinding(x,y) AND 297487008(y))"></part>
+            <part type="NCQ" label="ENGLISH ETHNIC" content="EX(y). (Patient(x) AND hasFinding(x,y) AND 25804004(y))"></part>
+            <part type="DIFF">
+                <part type="NCQ" label="ALL PATIENTS" content="EX(). (Patient(x))"></part>
+                <part type="NCQ" label="ANY LANGUAGE" content="EX(y). (Patient(x) AND hasFinding(x,y) AND 297289008(y))"></part>
+            </part>
+        </part>
+    </query>
+    <query label="ENGLISH-GT">
+        <part type="NCQ" label="ENGLISH" content="ENGLISH(x)"> </part>
+    </query>
+    <query label="True Positives">
+        <part type="AND">
+            <part type="REF" label="ENGLISH"></part>
+            <part type="REF" label="ENGLISH-GT"></part>
+        </part>
+    </query>
+    <query label="False Positives">
+        <part type="DIFF">
+            <part type="REF" label="ENGLISH"></part>
+            <part type="REF" label="ENGLISH-GT"></part>
+        </part>
+    </query>
+    <query label="False Negatives">
+        <part type="DIFF">
+            <part type="REF" label="ENGLISH-GT"></part>
+            <part type="REF" label="ENGLISH"></part>
+        </part>
+    </query>
+    <query label="True Negatives">
+        <part type="AND">
+            <part type="DIFF">
+                <part type="NCQ" label="ALL-PATIENTS" content="EX(). Patient(x)"></part>
+                <part type="REF" label="ENGLISH-GT"></part>
+            </part>
+            <part type="DIFF">
+                <part type="NCQ" label="ALL-PATIENTS" content="EX(). Patient(x)"></part>
+                <part type="REF" label="ENGLISH"></part>
+            </part>
+        </part>
+    </query>
+</queries>
+</doc>

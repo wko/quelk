@@ -1,0 +1,49 @@
+<doc>
+    <configs>
+        <config>
+            <database dbpath="jdbc:postgresql://localhost:5434" dbname="stemporaln2c2" user="postgres" password=""> </database>
+            <ontology path="data/ontologies/temporal_n2c2.ofn"></ontology>
+            <output path="data/queries/results/mi-6mos-temporal.xml"></output>
+            <options withInference="true" temporal="true"></options>
+        </config>
+    </configs>
+<operation name="answer"></operation>
+<queries>
+    <query label="MI-6MOS">
+        <part type="TNCQ" timepoint="latest" label="Myocardial Infarction in past 6 months" content="E[P-182D, P0D](EX(y). (Patient(x) AND hasFinding(x,y) AND 22298006(y)))"></part>
+    </query>
+    <query label="MI-6MOS-GT">
+        <part type="TNCQ" timepoint="latest" label="MI-6MOS" content="E[-inf, P0D](MI-6MOS(x))"> </part>
+    </query>
+    <query label="True Positives">
+        <part type="AND">
+            <part type="REF" label="MI-6MOS"></part>
+            <part type="REF" label="MI-6MOS-GT"></part>
+        </part>
+    </query>
+    <query label="False Positives">
+        <part type="DIFF">
+            <part type="REF" label="MI-6MOS"></part>
+            <part type="REF" label="MI-6MOS-GT"></part>
+        </part>
+    </query>
+    <query label="False Negatives">
+        <part type="DIFF">
+            <part type="REF" label="MI-6MOS-GT"></part>
+            <part type="REF" label="MI-6MOS"></part>
+        </part>
+    </query>
+    <query label="True Negatives">
+        <part type="AND">
+            <part type="DIFF">
+                <part type="NCQ" label="ALL-PATIENTS" content="EX(). Patient(x)"></part>
+                <part type="REF" label="MI-6MOS-GT"></part>
+            </part>
+            <part type="DIFF">
+                <part type="NCQ" label="ALL-PATIENTS" content="EX(). Patient(x)"></part>
+                <part type="REF" label="MI-6MOS"></part>
+            </part>
+        </part>
+    </query>
+</queries>
+</doc>

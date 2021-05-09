@@ -21,7 +21,7 @@ object ConfigValues {
   }
   val password = sys.env.get("DB_PASSWORD") match {
     case Some(pw) => pw
-    case None => ""
+    case None => "postgres"
   }
 
   val host = sys.env.get("DB_HOST") match {
@@ -42,7 +42,7 @@ object ConfigValues {
   def getOntologies(dir: String = ROOT_DIRECTORY): List[OntologyOption] = {
     val d = new File(dir)
     if (d.exists && d.isDirectory) {
-      val allowedExt = List("ofn", "owl")
+      val allowedExt = List("ofn", "owl", "xml")
       val l = for (f <- d.listFiles.filter(x => x.isFile && allowedExt.contains(extension(x.getCanonicalPath))).toList) yield {
         OntologyOption(f, withInference = true)
       }
@@ -64,8 +64,15 @@ object ConfigValues {
 
 
   val TELH_ONTOLOGY_PATH:String = ROOT_DIRECTORY + "TemporalTests.ofn"
+  val TEMPORAL_CANCER_ONTOLOGY_PATH:String = ROOT_DIRECTORY + "temporal-cancer.ofn"
+  val CANCER_ONTOLOGY_PATH:String = ROOT_DIRECTORY + "cancer.ofn"
+  val CANCER_ONTOLOGY_PREFIX = "cancer#"
 
+  val RESTAURANT_ONTOLOGY_PATH:String = ROOT_DIRECTORY + "restaurant.ofn"
+  val RESTAURANT_ONTOLOGY_PREFIX:String = "restaurant#"
 
+  val PATIENT_ONTOLOGY_PATH: String = ROOT_DIRECTORY + "patients.ofn" // "/Users/forkel/Data/SNOMED/snomed2017-english.ofn"
+  val PATIENT_ONTOLOGY_PREFIX: String = "http://goasq.lri.fr/ontology/n2c2#"
 
 
   val INT_BEGIN = "dt_from"

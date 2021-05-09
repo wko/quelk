@@ -1,0 +1,65 @@
+<doc>
+    <configs>
+        <config>
+            <database dbpath="jdbc:postgresql://localhost:5434" dbname="stemporaln2c2" user="postgres" password=""> </database>
+            <ontology path="data/ontologies/temporal_n2c2.ofn"></ontology>
+            <output path="data/queries/results/diabetes_temporal.xml"></output>
+            <options withInference="true" temporal="true"></options>
+        </config>
+    </configs>
+<operation name="answer"></operation>
+<queries>
+    <query temporal="true" label="MAJOR-DIABETES-TEMPORAL">
+        <part type="AND" >
+            <part type="TNCQ" timepoint="latest" label="Diabetes Mellitus" content="E[-inf, P0D](EX(y). (Patient(x) AND hasFinding(x,y) AND 73211009(y)))"></part>
+            <part type="GEN" n="1">
+                <part type="TNCQ" timepoint="latest" label="Amputation" content="E[-inf, P0D](EX(y). (Patient(x) AND hasFinding(x,y) AND 81723002(y)))"></part>
+                <part type="OR">
+                    <part type="TNCQ" timepoint="latest" label="Kidney Damage" content="E[-inf, P0D](EX(y). (Patient(x) AND hasFinding(x,y) AND 40095003(y)))"></part>
+                    <!-- <part type="NCQ" label="Kidney" content="EX(y). Patient(x) AND hasFinding(x,y) AND 64033007(y)"></part> -->
+                </part>
+                <part type="OR">
+                    <part type="TNCQ" timepoint="latest" label="Skin Conditions" content="E[-inf, P0D](EX(y). (Patient(x) AND hasFinding(x,y) AND 422000003(y)))"></part>
+                    <!-- <part type="NCQ" label="Skin" content="EX(y). Patient(x) AND hasFinding(x,y) AND 39937001(y)"></part> -->
+                </part>
+                <part type="TNCQ" timepoint="latest" label="Retinopathy" content="E[-inf, P0D](EX(y). (Patient(x) AND hasFinding(x,y) AND 29555009(y)))"></part>
+                <part type="TNCQ" timepoint="latest" label="Neuropathy" content="E[-inf, P0D](EX(y). (Patient(x) AND hasFinding(x,y) AND 386033004(y)))"></part>
+                <part type="TNCQ" timepoint="latest" label="Nephropathy" content="E[-inf, P0D](EX(y). (Patient(x) AND hasFinding(x,y) AND 90708001(y)))"></part>
+            </part>
+        </part>
+    </query>
+    <query label="MAJOR-DIABETES-GT">
+        <part type="TNCQ" timepoint="latest" label="MAJOR-DIABETES" content="E[-inf,inf](MAJOR-DIABETES(x))"> </part>
+    </query>
+    <query label="True Positives">
+        <part type="AND">
+            <part type="REF" label="MAJOR-DIABETES-TEMPORAL"></part>
+            <part type="REF" label="MAJOR-DIABETES-GT"></part>
+        </part>
+    </query>
+    <query label="False Positives">
+        <part type="DIFF">
+            <part type="REF" label="MAJOR-DIABETES-TEMPORAL"></part>
+            <part type="REF" label="MAJOR-DIABETES-GT"></part>
+        </part>
+    </query>
+    <query label="False Negatives">
+        <part type="DIFF">
+            <part type="REF" label="MAJOR-DIABETES-GT"></part>
+            <part type="REF" label="MAJOR-DIABETES-TEMPORAL"></part>
+        </part>
+    </query>
+    <query label="True Negatives">
+        <part type="AND">
+            <part type="DIFF">
+                <part type="TNCQ" timepoint="latest" label="ALL-PATIENTS" content="EX(). Patient(x)"></part>
+                <part type="REF" label="MAJOR-DIABETES-GT"></part>
+            </part>
+            <part type="DIFF">
+                <part type="TNCQ" timepoint="latest" label="ALL-PATIENTS" content="EX(). Patient(x)"></part>
+                <part type="REF" label="MAJOR-DIABETES-TEMPORAL"></part>
+            </part>
+        </part>
+    </query>
+</queries>
+</doc>

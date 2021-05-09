@@ -1,0 +1,52 @@
+<doc>
+    <configs>
+        <config>
+            <database dbpath="jdbc:postgresql://localhost:5434" dbname="stemporaln2c23" user="postgres" password=""> </database>
+            <ontology path="data/ontologies/temporal_n2c2.ofn"></ontology>
+            <output path="data/queries/results/keto-1-yr-temporal_3.xml"></output>
+            <options withInference="true" temporal="true"></options>
+        </config>
+    </configs>
+<operation name="answer"></operation>
+<queries>
+    <query label="KETO-1YR">
+    <part type="AND" >
+        <part type="TNCQ" timepoint="latest" label="History of Diabetes Mellitus" content="E[-inf, P0D](EX(y). (Patient(x) AND hasFinding(x,y) AND 73211009(y)))"></part>
+        <part type="TNCQ" timepoint="latest" label="Ketoacidosis in the past year" content="E[P-365D, P0D](EX(y). (Patient(x) AND hasFinding(x,y) AND 56051008(y)))"></part>
+    </part>
+    </query>
+    <query label="KETO-1YR-GT">
+        <part type="NCQ" label="KETO-1YR" content="KETO-1YR(x)"> </part>
+    </query>
+    <query label="True Positives">
+        <part type="AND">
+            <part type="REF" label="KETO-1YR"></part>
+            <part type="REF" label="KETO-1YR-GT"></part>
+        </part>
+    </query>
+    <query label="False Positives">
+        <part type="DIFF">
+            <part type="REF" label="KETO-1YR"></part>
+            <part type="REF" label="KETO-1YR-GT"></part>
+        </part>
+    </query>
+    <query label="False Negatives">
+        <part type="DIFF">
+            <part type="REF" label="KETO-1YR-GT"></part>
+            <part type="REF" label="KETO-1YR"></part>
+        </part>
+    </query>
+    <query label="True Negatives">
+        <part type="AND">
+            <part type="DIFF">
+                <part type="NCQ" label="ALL-PATIENTS" content="EX(). Patient(x)"></part>
+                <part type="REF" label="KETO-1YR-GT"></part>
+            </part>
+            <part type="DIFF">
+                <part type="NCQ" label="ALL-PATIENTS" content="EX(). Patient(x)"></part>
+                <part type="REF" label="KETO-1YR"></part>
+            </part>
+        </part>
+    </query>
+</queries>
+</doc>

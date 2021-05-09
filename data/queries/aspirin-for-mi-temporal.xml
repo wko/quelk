@@ -1,0 +1,52 @@
+<doc>
+    <configs>
+        <config>
+            <database dbpath="jdbc:postgresql://localhost:5434" dbname="stemporaln2c2" user="postgres" password=""> </database>
+            <ontology path="data/ontologies/temporal_n2c2.ofn"></ontology>
+            <output path="data/queries/results/aspirin_for_mi_temporal.xml"></output>
+            <options withInference="true" temporal="true"></options>
+        </config>
+    </configs>
+    <operation name="answer"></operation>
+    <queries>
+        <query label="ASP-FOR-MI">
+            <part type="AND" >
+                <part type="TNCQ" timepoint="latest" label="History of Myocardial Infarction" content="E[-inf, P0D](EX(y). (Patient(x) AND hasFinding(x,y) AND 22298006(y)))"></part>
+                <part type="TNCQ" timepoint="latest" label="History of Use of Aspirin" content="E[-inf, P0D](EX(y). (Patient(x) AND hasFinding(x,y) AND 387458008(y)))"></part>
+            </part>
+        </query>
+        <query label="ASP-FOR-MI-GT">
+            <part type="TNCQ" timepoint="latest" label="ASP-FOR-MI-GT" content="E[-inf, P0D](ASP-FOR-MI(x))"> </part>
+        </query>
+        <query label="True Positives">
+            <part type="AND">
+                <part type="REF" label="ASP-FOR-MI"></part>
+                <part type="REF" label="ASP-FOR-MI-GT"></part>
+            </part>
+        </query>
+        <query label="False Positives">
+            <part type="DIFF">
+                <part type="REF" label="ASP-FOR-MI"></part>
+                <part type="REF" label="ASP-FOR-MI-GT"></part>
+            </part>
+        </query>
+        <query label="False Negatives">
+            <part type="DIFF">
+                <part type="REF" label="ASP-FOR-MI-GT"></part>
+                <part type="REF" label="ASP-FOR-MI"></part>
+            </part>
+        </query>
+        <query label="True Negatives">
+            <part type="AND">
+            <part type="DIFF">
+                <part type="NCQ" label="ALL-PATIENTS" content="EX(). Patient(x)"></part>
+                <part type="REF" label="ASP-FOR-MI-GT"></part>
+            </part>
+                <part type="DIFF">
+                    <part type="NCQ" label="ALL-PATIENTS" content="EX(). Patient(x)"></part>
+                    <part type="REF" label="ASP-FOR-MI"></part>
+                </part>
+            </part>
+        </query>
+    </queries>
+</doc>

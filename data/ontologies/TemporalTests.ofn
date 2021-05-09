@@ -1,3 +1,70 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:03c7f6b5a45a6c99263a59aa1535a814168d89462c3217fe3ff560b02cf45835
-size 2359
+Prefix(:=<T#>)
+  Prefix(owl:=<http://www.w3.org/2002/07/owl#>)
+  Prefix(rdf:=<http://www.w3.org/1999/02/22-rdf-syntax-ns#>)
+  Prefix(xml:=<http://www.w3.org/XML/1998/namespace>)
+  Prefix(xsd:=<http://www.w3.org/2001/XMLSchema#>)
+  Prefix(rdfs:=<http://www.w3.org/2000/01/rdf-schema#>)
+  Prefix(time:=<time#>)
+
+  Ontology(<cancer>
+    Import(<http://www.w3.org/2006/time>)
+
+  Declaration(Class(:A))
+  Declaration(Class(:A1))
+  Declaration(Class(:A2))
+  Declaration(Class(:A3))
+  Declaration(Class(:A4))
+  Declaration(Class(:B))
+  Declaration(Class(:B1))
+  Declaration(Class(:B2))
+  Declaration(Class(:B3))
+  Declaration(ObjectProperty(:r1))
+  Declaration(ObjectProperty(:r2))
+  Declaration(ObjectProperty(:r3))
+  Declaration(ObjectProperty(:s))
+  Declaration(ObjectProperty(:s1))
+  Declaration(AnnotationProperty(time:diamond))
+  Declaration(AnnotationProperty(time:timepoint))
+
+
+
+
+  ############################
+  #   Object Properties
+    ############################
+
+
+  # T4
+  SubClassOf(Annotation(time:diamond "increasing"^^xsd:string) :A1 :A2)
+  SubClassOf(Annotation(time:diamond "decreasing"^^xsd:string) :A2 :A3)
+
+
+
+  # T5
+  SubObjectPropertyOf(Annotation(time:diamond "convex PT3S"^^xsd:string) :r1 :r2)
+  SubObjectPropertyOf(Annotation(time:diamond "convex PT5S"^^xsd:string) :r2 :r3)
+
+
+  # T6
+
+  SubClassOf(Annotation(time:diamond "increasing"^^xsd:string) :A :A3)
+  SubClassOf(Annotation(time:diamond "decreasing"^^xsd:string) :A :A4)
+  SubClassOf(ObjectIntersectionOf(:A3 :A4) :B)
+
+
+  # T8
+
+  SubClassOf(Annotation(time:diamond "increasing"^^xsd:string) :A ObjectSomeValuesFrom(:r :A1))
+  SubObjectPropertyOf(Annotation(time:diamond "convex PT3S"^^xsd:string) :r :s)
+  SubClassOf(Annotation(time:diamond "decreasing"^^xsd:string) :A1 :B1)
+  SubClassOf(ObjectSomeValuesFrom(:s :B1) :B2)
+
+  SubClassOf(Annotation(time:diamond "increasing"^^xsd:string) :A ObjectSomeValuesFrom(:r1 :A2))
+  SubObjectPropertyOf(Annotation(time:diamond "decreasing"^^xsd:string) :r1 :s1)
+  SubClassOf(Annotation(time:diamond "decreasing"^^xsd:string) :A2 :B1)
+  SubClassOf(ObjectSomeValuesFrom(:s1 :B1) :B3)
+
+
+  # Rigidity
+  SubClassOf(Annotation(time:diamond "rigid"^^xsd:string) :A :A)
+)

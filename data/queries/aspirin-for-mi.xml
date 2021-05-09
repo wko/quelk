@@ -1,0 +1,70 @@
+<doc>
+    <configs>
+        <config>
+            <database dbpath="jdbc:postgresql://localhost:5434" dbname="stemporaln2c2" user="postgres" password=""> </database>
+            <ontology path="data/ontologies/temporal_n2c2.ofn"></ontology>
+            <output path="data/queries/results/aspirin-for-mi-non-temporal.xml"></output>
+            <options withInference="true" temporal="false"></options>
+        </config>
+        <!--
+        <config>
+            <database dbpath="jdbc:postgresql://localhost" dbname="spatients" user="postgres" password="postgres"> </database>
+            <ontology path="data/ontologies/patients.ofn"></ontology>
+            <output path="data/queries/results/aspirin-for-mi-relaxed-noinf.xml"></output>
+            <options withInference="false" withRewriting="false"/>
+        </config>
+        <config>
+            <database dbpath="jdbc:postgresql://localhost" dbname="spatients" user="postgres" password="postgres"> </database>
+            <ontology path="data/ontologies/patients.ofn"></ontology>
+            <output path="data/queries/results/aspirin-for-mi-relaxed.xml"></output>
+        </config>
+        <config>
+            <database dbpath="jdbc:postgresql://localhost" dbname="spatientstest" user="postgres" password="postgres"> </database>
+            <ontology path="data/ontologies/patients-test.ofn"></ontology>
+            <output path="data/queries/results/aspirin-for-mi-relaxed-test.xml"></output>
+        </config>
+        -->
+    </configs>
+    <operation name="answer"></operation>
+    <queries>
+        <query label="ASP-FOR-MI">
+            <part type="AND" >
+                <part type="NCQ" label="Myocardial Infarction" content="EX(y). (Patient(x) AND hasFinding(x,y) AND 22298006(y))"></part>
+                <part type="NCQ" label="Use of Aspirin" content="EX(y). (Patient(x) AND hasFinding(x,y) AND 387458008(y))"></part>
+            </part>
+        </query>
+        <query label="ASP-FOR-MI-GT">
+            <part type="NCQ" label="ASP-FOR-MI-GT" content="ASP-FOR-MI(x)"> </part>
+        </query>
+        <query label="True Positives">
+            <part type="AND">
+                <part type="REF" label="ASP-FOR-MI"></part>
+                <part type="REF" label="ASP-FOR-MI-GT"></part>
+            </part>
+        </query>
+        <query label="False Positives">
+            <part type="DIFF">
+                <part type="REF" label="ASP-FOR-MI"></part>
+                <part type="REF" label="ASP-FOR-MI-GT"></part>
+            </part>
+        </query>
+        <query label="False Negatives">
+            <part type="DIFF">
+                <part type="REF" label="ASP-FOR-MI-GT"></part>
+                <part type="REF" label="ASP-FOR-MI"></part>
+            </part>
+        </query>
+        <query label="True Negatives">
+            <part type="AND">
+            <part type="DIFF">
+                <part type="NCQ" label="ALL-PATIENTS" content="EX(). Patient(x)"></part>
+                <part type="REF" label="ASP-FOR-MI-GT"></part>
+            </part>
+                <part type="DIFF">
+                    <part type="NCQ" label="ALL-PATIENTS" content="EX(). Patient(x)"></part>
+                    <part type="REF" label="ASP-FOR-MI"></part>
+                </part>
+            </part>
+        </query>
+    </queries>
+</doc>

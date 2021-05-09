@@ -35,7 +35,8 @@ libraryDependencies ++= Seq(
   "net.sourceforge.owlapi" %  "owlapi-distribution"    % "4.2.7",
   "org.semanticweb.elk" %  "elk-reasoner"    % "0.4.3",
   "org.semanticweb.elk" %  "elk-owlapi"    % "0.4.3",
-  "org.scalatest" %% "scalatest" % "3.0.5" % Test
+  "org.scalatest" %% "scalatest" % "3.0.5" % Test,
+  //"org.jgrapht" % "jgrapht-core" % "1.5.0"
 )
 
 

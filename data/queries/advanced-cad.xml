@@ -1,0 +1,75 @@
+<doc>
+    <configs>
+        <config>
+            <database dbpath="jdbc:postgresql://localhost:5434" dbname="stemporaln2c2" user="postgres" password=""> </database>
+            <ontology path="data/ontologies/temporal_n2c2.ofn"></ontology>
+            <output path="data/queries/results/advanced-cad-non-temporal.xml"></output>
+            <options withInference="true" temporal="false"></options>
+        </config>
+        <!--<config>
+            <database dbpath="jdbc:postgresql://localhost" dbname="spatients" user="postgres" password="postgres"> </database>
+            <ontology path="data/ontologies/patients.ofn"></ontology>
+            <output path="data/queries/results/advanced-cad-results-relaxed-noinf.xml"></output>
+            <options withInference="false" withRewriting="false"/>
+        </config>
+        <config>
+            <database dbpath="jdbc:postgresql://localhost" dbname="spatientstest" user="postgres" password="postgres"> </database>
+            <ontology path="data/ontologies/patients-test.ofn"></ontology>
+            <output path="data/queries/results/advanced-cad-results-relaxed-test.xml"></output>
+        </config>
+        <config>
+            <database dbpath="jdbc:postgresql://localhost" dbname="spatients" user="postgres" password="postgres"> </database>
+            <ontology path="data/ontologies/patients.ofn"></ontology>
+            <output path="data/queries/results/advanced-cad-results-relaxed.xml"></output>
+        </config>
+        -->
+    </configs>
+
+<operation name="answer"></operation>
+<queries>
+    <query label="ADVANCED-CAD">
+    <part type="AND" >
+        <part type="NCQ" label="Cardiovescular Disease" content="EX(y). (Patient(x) AND hasFinding(x,y) AND 49601007(y))"></part>
+        <part type="GEN" n="1">
+            <part type="NCQ" label="Taking Medication" content="EX(y). (Patient(x) AND hasFinding(x,y) AND 129019007(y))"></part>
+            <part type="NCQ" label="Myocardial Infarction" content="EX(y). (Patient(x) AND hasFinding(x,y) AND 22298006(y))"></part>
+            <part type="NCQ" label="Angina" content="EX(y). (Patient(x) AND hasFinding(x,y) AND 194828000(y))"></part>
+            <part type="NCQ" label="Ischemia" content="EX(y). (Patient(x) AND hasFinding(x,y) AND 52674009(y))"></part>
+        </part>
+    </part>
+    </query>
+    <query label="ADVANCED-CAD-GT">
+        <part type="NCQ" label="ADVANCED-CAD" content="ADVANCED-CAD(x)"> </part>
+    </query>
+    <query label="True Positives">
+        <part type="AND">
+            <part type="REF" label="ADVANCED-CAD"></part>
+            <part type="REF" label="ADVANCED-CAD-GT"></part>
+        </part>
+    </query>
+    <query label="False Positives">
+        <part type="DIFF">
+            <part type="REF" label="ADVANCED-CAD"></part>
+            <part type="REF" label="ADVANCED-CAD-GT"></part>
+        </part>
+    </query>
+    <query label="False Negatives">
+        <part type="DIFF">
+            <part type="REF" label="ADVANCED-CAD-GT"></part>
+            <part type="REF" label="ADVANCED-CAD"></part>
+        </part>
+    </query>
+    <query label="True Negatives">
+        <part type="AND">
+        <part type="DIFF">
+            <part type="NCQ" label="ALL-PATIENTS" content="EX(). Patient(x)"></part>
+            <part type="REF" label="ADVANCED-CAD-GT"></part>
+        </part>
+            <part type="DIFF">
+                <part type="NCQ" label="ALL-PATIENTS" content="EX(). Patient(x)"></part>
+                <part type="REF" label="ADVANCED-CAD"></part>
+            </part>
+        </part>
+    </query>
+</queries>
+</doc>

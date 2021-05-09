@@ -15,5 +15,5 @@ case class OntologyOption(file: File, withInference: Boolean) {
   lazy val name = file.toPath.getFileName.toString.substring(0,file.toPath.getFileName.toString.lastIndexOf("."))
   lazy val connection: DBParams = ConfigValues.getConnectionParams(dbname)
   def getHelper(normalized: Boolean=false): OntologyHelper = OntologyHelper.createOntologyHelper(file, None, normalized)
-  def getDBManager: DatabaseManager = DatabaseManager.getManager(connection)
+  def getDBManager: DatabaseManager= DatabaseManager.getManager(connection)
 }

@@ -1,0 +1,58 @@
+<doc>
+    <configs>
+        <config>
+            <database dbpath="jdbc:postgresql://localhost:5434" dbname="stemporaln2c2" user="postgres" password=""> </database>
+            <ontology path="data/ontologies/temporal_n2c2.ofn"></ontology>
+            <output path="data/queries/results/advanced_cad_temporal.xml"></output>
+            <options withInference="true" temporal="true"></options>
+        </config>
+    </configs>
+
+<operation name="answer"></operation>
+<queries>
+    <query temporal="true" label="ADVANCED-CAD">
+    <part type="AND" >
+        <part type="TNCQ" timepoint="latest" label="Cardiovescular Disease some time in the past" content="E[-inf, P0D](EX(y). (Patient(x) AND hasFinding(x,y) AND 49601007(y)))"></part>
+        <part type="GEN" n="1">
+            <part type="TNCQ" timepoint="latest" label="History of Taking Medication" content="E[-inf, P0D](EX(y). (Patient(x) AND hasFinding(x,y) AND 129019007(y)))"></part>
+            <part type="TNCQ" timepoint="latest" label="History of Myocardial Infarction" content="E[-inf, P0D](EX(y). (Patient(x) AND hasFinding(x,y) AND 22298006(y)))"></part>
+            <part type="TNCQ" timepoint="latest" label="Currently experiencing Angina" content="E[P-30D, P0D](EX(y). (Patient(x) AND hasFinding(x,y) AND 194828000(y)))"></part>
+            <part type="TNCQ" timepoint="latest" label="History of Ischemia" content="E[-inf, P0D](EX(y). (Patient(x) AND hasFinding(x,y) AND 52674009(y)))"></part>
+        </part>
+    </part>
+    </query>
+    <query label="ADVANCED-CAD-GT">
+        <part type="TNCQ" timepoint="latest" label="ADVANCED-CAD" content="E[-inf,inf](ADVANCED-CAD(x))"> </part>
+    </query>
+    <query label="True Positives">
+        <part type="AND">
+            <part type="REF" label="ADVANCED-CAD"></part>
+            <part type="REF" label="ADVANCED-CAD-GT"></part>
+        </part>
+    </query>
+    <query label="False Positives">
+        <part type="DIFF">
+            <part type="REF" label="ADVANCED-CAD"></part>
+            <part type="REF" label="ADVANCED-CAD-GT"></part>
+        </part>
+    </query>
+    <query label="False Negatives">
+        <part type="DIFF">
+            <part type="REF" label="ADVANCED-CAD-GT"></part>
+            <part type="REF" label="ADVANCED-CAD"></part>
+        </part>
+    </query>
+    <query label="True Negatives">
+        <part type="AND">
+        <part type="DIFF">
+            <part type="NCQ" label="ALL-PATIENTS" content="EX(). Patient(x)"></part>
+            <part type="REF" label="ADVANCED-CAD-GT"></part>
+        </part>
+            <part type="DIFF">
+                <part type="NCQ" label="ALL-PATIENTS" content="EX(). Patient(x)"></part>
+                <part type="REF" label="ADVANCED-CAD"></part>
+            </part>
+        </part>
+    </query>
+</queries>
+</doc>

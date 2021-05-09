@@ -54,7 +54,7 @@ object ConsoleTool extends StrictLogging {
         val model = new TemporalDatabaseModel(manager, config.withInference, helper)
         if (!model.isInitialized(helper.ontology)) {
           logger.info("Model is not initialized. Saving to Database once..")
-          //model.saveToDatabase()
+          model.saveToDatabase()
           //model = DatabaseModel.saveToDatabase(helper, manager, config.withInference)
           logger.info("done.")
         }
@@ -64,7 +64,7 @@ object ConsoleTool extends StrictLogging {
         var model = new DatabaseModel(manager, config.withInference)
         if (!model.isInitialized(helper.ontology)) {
           logger.info("Model is not initialized. Saving to Database once..")
-          //model.saveToDatabase(helper)
+          model.saveToDatabase(helper)
           //model = DatabaseModel.saveToDatabase(helper, manager, config.withInference)
           logger.info("done.")
         }
